@@ -38,8 +38,15 @@ void print_trame(Trame* t)
     //affiche les octets de la trame
     while (t != NULL)
     {
-        printf("%d ", t->octet);
-        t = t->next;
+        int i=0;
+        printf("    ");
+        while(i<16 && t != NULL){
+            printf("%0x ", t->octet);
+            t = t->next;
+            i++;
+        }
+        printf("\n");
+        
     }
     printf("\n");
 }
@@ -48,8 +55,9 @@ void print_trace(Trace* t)
 {
     //affiche les num de chaque trame
     while (t != NULL)
-    {
-        printf("%d \n", t->num);
+    {   
+        printf("\n\n");
+        printf("%d", t->num);
         print_trame(t->ptrame);
         t = t->next;
     }
@@ -80,14 +88,15 @@ Trace* get_trace(FILE * file){
     //La methode recupere une trace et creer une liste de type Trace qu'elle initialise avec ses Trames
     Trace* trace=NULL;
     Trace* endtrace=NULL;
-    
+    Trame* endtrame;
     if(file!=NULL){
         
         int a;//variable de parcourt des offsets
         int j;//variable de parcourt des octets
         int cpt=0;//compteur de trame;
-        
+      
         while(!feof(file)){
+            //principe de la boucle: on parcout ligne par ligne ne tudiant d'abord l'offset puis les octets
             
             //lecture de l'offset
             fscanf(file, "%x", &a);
@@ -100,16 +109,19 @@ Trace* get_trace(FILE * file){
             //printf("\n %d   ",a);
             if(a==0){//debut d'une trame
                 cpt++;
+               
                 if(cpt==1){
                     trace=create_cell_trace(cpt,NULL);
                     endtrace=trace;
+                     
                 }else{
                     endtrace->next=create_cell_trace(cpt,NULL);
                     endtrace=endtrace->next;
+                   
                 }
             } 
             
-            Trame* endtrame;
+            
             //lecture d'une ligne
             for(int i=0;i<16;i++){//16 octets par ligne, donc 16* fscanf
                 
@@ -121,7 +133,7 @@ Trace* get_trace(FILE * file){
                     return trace;
                 }
                 
-                if(i==0){// si c'est le premier octet
+                if(i==0 && a==0){// si c'est le premier octet
                     endtrame=create_cell_trame(j); // on creer une cellule de trame
                     endtrace->ptrame=endtrame;//ptrame de la trace courante point vers la cellule contenant l'octet courant
                 }else{//sinon
@@ -152,9 +164,9 @@ int main()
 
      
     FILE *file = fopen("trame.txt", "r");//ouvre fichier contenant la trame
-    Trace* t=NULL;
-    t=get_trace(file);
+    Trace* t=get_trace(file);
     print_trace(t);
+    //print_trame(t->next->ptrame);
     free_trace(t);
     
     return 0;
