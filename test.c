@@ -1,6 +1,6 @@
 #include <stdio.h> 
 #include <stdlib.h>
-#include "type.h"
+#include "test.h"
 
 
 Trace* create_cell_trace (int num, Trame* ptrame){
@@ -24,15 +24,6 @@ Trame* create_cell_trame (int octet){
     return newcelltrame;
 }
 
-/*void print_cell_trame(Trame* cell){
-    //affiche l'octet de la cellule courante de la trame
-    printf("%d \n",cell->octet);
-}
-
-void print_cell_trace(Trace* cell){
-    //affiche le numero de la trame courante dans la trace
-    printf("%d \n",cell->num);
-}*/
 void print_trame(Trame* t)
 {
     //affiche les octets de la trame
@@ -41,7 +32,7 @@ void print_trame(Trame* t)
         int i=0;
         printf("    ");
         while(i<16 && t != NULL){
-            printf("%0x ", t->octet);
+            printf("%d ", t->octet);
             t = t->next;
             i++;
         }
@@ -56,8 +47,8 @@ void print_trace(Trace* t)
     //affiche les num de chaque trame
     while (t != NULL)
     {   
-        printf("\n\n");
-        printf("%d", t->num);
+        
+        printf("%d\n", t->num);
         print_trame(t->ptrame);
         t = t->next;
     }
@@ -106,7 +97,6 @@ Trace* get_trace(FILE * file){
                     fclose(file);
                     return trace;
                 }
-            //printf("\n %d   ",a);
             if(a==0){//debut d'une trame
                 cpt++;
                
@@ -116,8 +106,7 @@ Trace* get_trace(FILE * file){
                      
                 }else{
                     endtrace->next=create_cell_trace(cpt,NULL);
-                    endtrace=endtrace->next;
-                   
+                    endtrace=endtrace->next;  
                 }
             } 
             
@@ -140,8 +129,6 @@ Trace* get_trace(FILE * file){
                     endtrame->next=create_cell_trame(j);
                     endtrame=endtrame->next;
                 }
-
-                //printf("%d ",j);
             }
         }
 
@@ -154,20 +141,4 @@ Trace* get_trace(FILE * file){
     fclose(file);
     return trace;
 }
-int main()
-{
-    //Test initialisation d'une cellule
-    /*int a =5;
-    Cell* cell=NULL; //adresse de la cellule
-    cell=create_cell(a);
-    print_cell(cell);*/
 
-     
-    FILE *file = fopen("trame.txt", "r");//ouvre fichier contenant la trame
-    Trace* t=get_trace(file);
-    print_trace(t);
-    //print_trame(t->next->ptrame);
-    free_trace(t);
-    
-    return 0;
-}
