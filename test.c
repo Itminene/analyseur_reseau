@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "type.h"
 
+/* Commentaire Test */
 
 Trace* create_cell_trace (int num, Trame* ptrame){
     // creer une nouvelle cellule de trace (une nvle trame)
