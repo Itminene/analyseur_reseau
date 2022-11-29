@@ -1,4 +1,4 @@
-#ifndef TEST_H
+/*#ifndef TEST_H
 #define TEST_H
 
 //La trace est stockés dans une liste de liste
@@ -32,4 +32,4 @@ void print_trace(Trace* t);
 Trame* free_trame(Trame* t);
 Trace* free_trace(Trace* t);
 Trace* get_trace(FILE * file);
-#endif
+#endif*/

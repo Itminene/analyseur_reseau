@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "test.h"
 #include "ethernet.h"
+#include "lecture_trame.h"
 
 int main()
 { 
