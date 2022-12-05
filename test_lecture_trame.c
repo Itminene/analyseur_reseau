@@ -7,8 +7,16 @@
 
 int main(int argc, char const *argv[])
 {
+    printf("========== TESTS CONVERSIONS ==========\n");
+
+    printf("test 1 : %s\n", conversion_double_chiffres('0', 'a') == 10 ? "succès" : "échec");
+    printf("test 2 : %s\n", conversion_double_chiffres('a', '0') == 160 ? "succès" : "échec");
+    printf("test 3 : %s\n", conversion_double_chiffres('f', 'f') == 255 ? "succès" : "échec");
+    printf("test 4 : %s\n", conversion_double_chiffres('0', '0') == 0 ? "succès" : "échec");
+    printf("test 5 : %s\n", conversion_double_chiffres('x', 'a') == -1 ? "succès" : "échec");
+
     /* Création de 40 cellules d'octets que l'on ajoute à une trame */
-    printf("========== TEST 1 ==========\n");
+    printf("\n========== TEST 1 ==========\n");
 
     // Déclarations
     Cell_octet *octet;
@@ -65,7 +73,46 @@ int main(int argc, char const *argv[])
     /* Récupération d'une trace à partir d'un fichier */
     printf("========== TEST 3 ==========\n");
 
+    trace = get_trace("trace2.txt");
+    assert(trace);
+
+    /* Affichage de la trace */
+    print_trace(trace);
+
+    /* Libération de la trace */
+    free_trace(trace);
+
+
+    /* Récupération d'une trace à partir d'un fichier */
+    printf("========== TEST 4 ==========\n");
+
     trace = get_trace("trace1.txt");
+    assert(trace);
+
+    /* Affichage de la trace */
+    print_trace(trace);
+
+    /* Libération de la trace */
+    free_trace(trace);
+
+
+    /* Récupération d'une trace à partir d'un fichier */
+    printf("========== TEST 5 ==========\n");
+
+    trace = get_trace("trace_complete_tcp.txt");
+    assert(trace);
+
+    /* Affichage de la trace */
+    print_trace(trace);
+
+    /* Libération de la trace */
+    free_trace(trace);
+
+
+    /* Récupération d'une trace à partir d'un fichier */
+    printf("========== TEST 6 ==========\n");
+
+    trace = get_trace("trace3.txt");
     assert(trace);
 
     /* Affichage de la trace */

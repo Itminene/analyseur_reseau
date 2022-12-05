@@ -17,4 +17,4 @@ analyse_trame.o: analyse_trame.c analyse_trame.h
 	gcc -Wall -c analyse_trame.c
 
 clean :
-	rm -f *.o main
+	rm -f *.o main test_analyse_trame test_lecture_trame

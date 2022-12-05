@@ -3,6 +3,65 @@
 #include <assert.h>
 #include "lecture_trame.h"
 
+
+/* Fonction qui permet de convertir un caractère représentant
+   un nombre héxadécimal (lettre en minuscules) en entier
+   Retourne l'entier obtenu ou -1 si le caractère n'est pas un entier   */
+int conversion_char_int_hexa(char c)
+{
+    switch(c)
+    {
+        case '0':
+            return 0;
+        case '1':
+            return 1;
+        case '2':
+            return 2;
+        case '3':
+            return 3;
+        case '4':
+            return 4;
+        case '5':
+            return 5;
+        case '6':
+            return 6;
+        case '7':
+            return 7;
+        case '8':
+            return 8;
+        case '9':
+            return 9;
+        case 'a':
+            return 10;
+        case 'b':
+            return 11;
+        case 'c':
+            return 12;
+        case 'd':
+            return 13;
+        case 'e':
+            return 14;
+        case 'f':
+            return 15;
+        default:
+            return -1;
+    }
+}
+
+/* Fonction qui permet de retourner la valeur d'un nombre
+   hexadécimal écrit sur deux chiffres
+   Retourne -1 en cas d'échec */
+int conversion_double_chiffres(char c1, char c2)
+{
+    int a = conversion_char_int_hexa(c1);
+    int b = conversion_char_int_hexa(c2);
+
+    if(a < 0 || b < 0)
+        return -1;
+    
+    return a * 16 + b;
+}
+
 /* Fonction qui créé une nouvelle cellule de trace initialement vide
    nb_trame correspond au nombre de trames de la trace
    Retourne le pointeur vers la trace en cas de succès et NULL sinon */
@@ -206,6 +265,7 @@ Trace *get_trace(char *nom_fic)
     Trame *trame = NULL;
     Cell_octet *octet;
     int offset, val_octet, num = 0;
+    char c, c2;
 
     file = fopen(nom_fic, "r");
     if(file == NULL)
@@ -217,6 +277,8 @@ Trace *get_trace(char *nom_fic)
 
     while(!feof(file)) // On boucle tant que l'on est pas à la fin du fichier
     {
+        // Lecture d'une ligne
+
         // Lecture de l'offset
         if(fscanf(file, "%x", &offset) != 1)
         {
@@ -230,6 +292,7 @@ Trace *get_trace(char *nom_fic)
 
         if(offset == 0) // C'est une nouvelle trame
         {
+            fprintf(stderr, "Nouvelle Trame ! (%d)\n", num + 1);
             if(trame != NULL) // On ajoute la trame si ce n'est pas le tout premier tour de boucle
             {
                 // Ajout de la trame précédente à la trace
@@ -241,17 +304,37 @@ Trace *get_trace(char *nom_fic)
             assert(trame);
         }
 
-        // On parcourt la ligne cad 16 octets
+        // On parcourt la ligne
+
+        // Les 3 espaces
+        for(unsigned i=0; i<3; i++)
+        {
+            c = fgetc(file);
+            if(c != ' ')
+                fprintf(stderr, "Problème de format (espace)\n");
+        }
+
+        // On lit au moins un octet, au plus 16 octets
         for(unsigned i=0; i<16; i++)
         {
             // Lecture de l'octet courant
-            if(fscanf(file, "%x", &val_octet) != 1)
+            c = fgetc(file);
+
+            // Ce n'est pas un chiffre en hexa : plus d'octet à lire sur cette ligne
+            if((c < '0' || c > '9') && (c < 'a' || c > 'f'))
             {
-                fprintf(stderr, "Erreur lors de la lecture de l'octet (trame : %d, offset : %d, octet : %d\n", num, offset, i);
-                free(trame);
-                free_trace(trace);
-                return NULL;
+                //fprintf(stderr, "Ce n'est pas un chiffre en hexa (c = '%c')\n", c);
+                break;
             }
+            
+            c2 = fgetc(file);
+
+            //fprintf(stderr, "c = %c, c2 = %c\n", c, c2);
+
+            // Initialisation valeur octet
+            val_octet = conversion_double_chiffres(c, c2);
+            //fprintf(stderr, "val_octet = %d\n", val_octet);
+            assert(val_octet >= 0 && val_octet <= 255);
 
             // Création d'une nouvelle cellule d'octet
             octet = create_cell_octet(val_octet);
@@ -259,7 +342,16 @@ Trace *get_trace(char *nom_fic)
 
             // Ajout de l'octet dans la trame courante
             ajout_octet(octet, trame);
-        }  
+
+            // Lecture de l'espace
+            c = fgetc(file);
+        }
+
+        // Lecture jusqu'à la fin de la ligne ou du fichier
+        while(c != '\n' && !feof(file))
+        {
+            c = fgetc(file);
+        }
     }
 
     // Ajout de la dernière trame

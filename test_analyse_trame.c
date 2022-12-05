@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
     Trame *trame, *paquet = NULL;
     int type;
 
-    printf("========== TEST ETHERNET 1 ==========\n");
+    printf("========== TEST ETHERNET TRACE 1 ==========\n");
     trace = get_trace("trace1.txt");
     assert(trace);
 
@@ -27,6 +27,65 @@ int main(int argc, char const *argv[])
 
     printf("Après lecture : \n");
     print_trame(paquet);
+
+    // Libération de la trace
+    free_trace(trace);
+
+    free(paquet);
+
+    printf("========== TEST ETHERNET TRACE 3 ==========\n");
+    trace = get_trace("trace3.txt");
+    assert(trace);
+
+    trame = trace->premier;
+
+    printf("Avant lecture : \n");
+    print_trame(trame);
+
+    type = read_ethernet(trame, &paquet);
+    printf("type = %x\n", type);
+
+    printf("Après lecture : \n");
+    print_trame(paquet);
+
+    // Libération de la trace
+    free_trace(trace);
+
+    free(paquet);
+
+    printf("========== TEST ETHERNET TRACE COMPLETE TCP ==========\n");
+    trace = get_trace("trace_complete_tcp.txt");
+    assert(trace);
+
+    trame = trace->premier;
+
+    printf("Avant lecture : \n");
+    print_trame(trame);
+
+    type = read_ethernet(trame, &paquet);
+    printf("type = %x\n", type);
+
+    printf("Après lecture : \n");
+    print_trame(paquet);
+
+    // Libération de la trace
+    free_trace(trace);
+
+    free(paquet);
+
+    printf("\n\n Toutes les trames :\n\n");
+    trace = get_trace("trace_complete_tcp.txt");
+    assert(trace);
+
+    trame = trace->premier;
+
+    while(trame != NULL)
+    {
+        type = read_ethernet(trame, &paquet);
+        printf("type = %x\n", type);
+
+        trame = trame->next;
+    }
 
     // Libération de la trace
     free_trace(trace);
