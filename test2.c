@@ -5,6 +5,8 @@
 
 int conversion_char_int_hexa(char c);
 int conversion_double_chiffres(char c1, char c2);
+int hexa_to_bin(int num, char (*bin)[8]);
+
 
 int main(int argc, char const *argv[])
 {
@@ -16,16 +18,9 @@ int main(int argc, char const *argv[])
     printf("a = %d et f = %d\n", 'a', 'f');
     printf("0 = %d et 9 = %d\n", '0', '9');
 
-    /*FILE *file = fopen("trace2.txt", "r");
-    assert(file);
-
-    int octet, cpt = 0;
-    char c;
-
-    while()
-
-    printf("\n");
-    fclose(file);*/
+    char bin[8] = {'X', '1', '1', '1', '1', '1', '1', '1'};
+    hexa_to_bin(123, &bin);
+    printf("bin[0] = %c\n", bin[0]);
 
     return 0;
 }
@@ -88,169 +83,13 @@ int conversion_double_chiffres(char c1, char c2)
     return a * 10 + b;
 }
 
-/* Fonction qui permet de récupérer une trace à partir d'un 
-   fichier 'nom_fic'
-   Retourne un pointeur vers la trace en cas de succès et
-   NULL sinon */
-/*Trace *get_trace(char *nom_fic)
+// Passage en paramètre : hexa_to_bin(num, &bin);
+
+int hexa_to_bin(int num, char (*bin)[8])
 {
-    // Déclarations
-    FILE *file;
-    Trace *trace = create_cell_trace();
-    Trame *trame = NULL;
-    Cell_octet *octet;
-    int offset, val_octet, num = 0;
-    int fin = 0;
-    char c;
+    // Modification
+    (*bin)[0] = '0';
 
-    file = fopen(nom_fic, "r");
-    if(file == NULL)
-    {
-        fprintf(stderr, "Erreur lors de l'ouverture du ficher %s\n", nom_fic);
-        free_trace(trace);
-        return NULL;
-    }
+    return 0;
+}
 
-    while(!feof(file)) // On boucle tant que l'on est pas à la fin du fichier
-    {
-        // Lecture d'une ligne
-
-        // Lecture de l'offset
-        if(fscanf(file, "%x", &offset) != 1)
-        {
-            //if(feof(file)) // Cas où l'on est à la fin du fichier
-                //break;
-
-            fprintf(stderr, "Erreur lors de la lecture de l'offset\n");
-            free_trace(trace);
-            return NULL;
-        }
-
-        if(offset == 0) // C'est une nouvelle trame
-        {
-            if(trame != NULL) // On ajoute la trame si ce n'est pas le tout premier tour de boucle
-            {
-                // Ajout de la trame précédente à la trace
-                ajout_trame(trame, trace);
-            }
-
-            // Création d'une nouvelle trame
-            trame = create_cell_trame(++num);
-            assert(trame);
-        }
-
-        // On parcourt la ligne
-        while(c = fgetc(file) != '\n')
-
-        if(fin)
-        {
-            fin = 0;
-            break;
-        }
-    }
-
-    // Ajout de la dernière trame
-    ajout_trame(trame, trace);
-
-    if(fclose(file) == EOF)
-    {
-        fprintf(stderr, "Erreur lors de la fermeture du fichier %s", nom_fic);
-        free_trace(trace);
-        return NULL;
-    }
-
-    return trace;
-}*/
-
-
-/* Fonction qui permet de récupérer une trace à partir d'un 
-   fichier 'nom_fic'
-   Retourne un pointeur vers la trace en cas de succès et
-   NULL sinon */
-/*Trace *get_trace(char *nom_fic)
-{
-    // Déclarations
-    FILE *file;
-    Trace *trace = create_cell_trace();
-    Trame *trame = NULL;
-    Cell_octet *octet;
-    int offset, val_octet, num = 0;
-    int fin = 0;
-
-    file = fopen(nom_fic, "r");
-    if(file == NULL)
-    {
-        fprintf(stderr, "Erreur lors de l'ouverture du ficher %s\n", nom_fic);
-        free_trace(trace);
-        return NULL;
-    }
-
-    while(!feof(file)) // On boucle tant que l'on est pas à la fin du fichier
-    {
-        // Lecture de l'offset
-        if(fscanf(file, "%x", &offset) != 1)
-        {
-            if(feof(file)) // Cas où l'on est à la fin du fichier
-                break;
-
-            fprintf(stderr, "Erreur lors de la lecture de l'offset\n");
-            free_trace(trace);
-            return NULL;
-        }
-
-        if(offset == 0) // C'est une nouvelle trame
-        {
-            if(trame != NULL) // On ajoute la trame si ce n'est pas le tout premier tour de boucle
-            {
-                // Ajout de la trame précédente à la trace
-                ajout_trame(trame, trace);
-            }
-
-            // Création d'une nouvelle trame
-            trame = create_cell_trame(++num);
-            assert(trame);
-        }
-
-        // On parcourt la ligne cad 16 octets
-        for(unsigned i=0; i<16; i++)
-        {
-            // Lecture de l'octet courant
-            if(fscanf(file, "%x", &val_octet) != 1)
-            {
-                // La ligne n'est pas remplie : fin de la trame
-                fin = 1;
-                break;
-
-                //fprintf(stderr, "Erreur lors de la lecture de l'octet (trame : %d, offset : %d, octet : %d\n", num, offset, i);
-                //free(trame);
-                //free_trace(trace);
-                //return NULL;
-            }
-
-            // Création d'une nouvelle cellule d'octet
-            octet = create_cell_octet(val_octet);
-            assert(octet);
-
-            // Ajout de l'octet dans la trame courante
-            ajout_octet(octet, trame);
-        } 
-
-        if(fin)
-        {
-            fin = 0;
-            break;
-        }
-    }
-
-    // Ajout de la dernière trame
-    ajout_trame(trame, trace);
-
-    if(fclose(file) == EOF)
-    {
-        fprintf(stderr, "Erreur lors de la fermeture du fichier %s", nom_fic);
-        free_trace(trace);
-        return NULL;
-    }
-
-    return trace;
-}*/
