@@ -435,6 +435,8 @@ List_Printable* trace_brut_to_str(Trace* trace){
         
     }
     if(lp->nb_printable==0){
+        free_list_Printable(lp);
+        free_cell_printable(cp);
         
         return NULL;
     }
