@@ -37,6 +37,8 @@ struct Trace
 
 /* Fonctions */
 
+int conversion_char_int_hexa(char c);
+int conversion_double_chiffres(char c1, char c2);
 Trace *create_cell_trace();
 Trame *create_cell_trame(int num);
 Cell_octet *create_cell_octet(int valeur);
