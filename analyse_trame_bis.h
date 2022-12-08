@@ -24,6 +24,7 @@ struct Tcp_brut
 typedef struct  Printable Printable ;
 struct Printable
 {
+    int tcp;
     char ip_src[200];
     char ip_dst[200];
     int pos_src;

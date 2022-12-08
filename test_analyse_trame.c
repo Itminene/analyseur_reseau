@@ -104,7 +104,6 @@ int main(int argc, char const *argv[])
 
     free_list_Printable(lp);
     free_trace(trace);
-     
 
     return 0;
 }

@@ -28,7 +28,7 @@ int read_ethernet(Trame* trame){
     if(tmp->octet==0){
         return 1;
     }
-
+    
     return 0;
 }
 
@@ -275,7 +275,7 @@ Cell_Printable* tcp_to_str(Tcp_brut* tcp_brut){
     }
 
     //Commentaire
-    sprintf(cell_printable->printable->comment,"TCP: %s-> %s [ %s]",cell_printable->printable->port_src,cell_printable->printable->port_dst,cell_printable->printable->type);
+    sprintf(cell_printable->printable->comment," %s-> %s [ %s]",cell_printable->printable->port_src,cell_printable->printable->port_dst,cell_printable->printable->type);
     
     //Seq
     char val_tmp[30];
@@ -321,6 +321,8 @@ Cell_Printable* tcp_to_str(Tcp_brut* tcp_brut){
     sprintf(val_tmp," Len=%d",tcp_brut->len);
     strcat(cell_printable->printable->comment,val_tmp);
     }
+
+    cell_printable->printable->tcp=1;
     return cell_printable;
     
 }
@@ -346,7 +348,7 @@ Cell_Printable* tcp_to_http(Trame*data,Tcp_brut* tcp_brut){
     //Type
     strcpy(cell_printable->printable->type,"HTTP");
     //Commentaire
-    strcpy(cell_printable->printable->comment,"HTTP: ");   
+    strcpy(cell_printable->printable->comment,"");   
 
     printf("On va commencer la boucle de parcourt des octets\n");
     char c_tmp[2];
@@ -356,6 +358,7 @@ Cell_Printable* tcp_to_http(Trame*data,Tcp_brut* tcp_brut){
         strcat(cell_printable->printable->comment,c_tmp);
         data->premier=data->premier->next;
     } 
+    cell_printable->printable->tcp=0;
     return cell_printable;
 }
 /*Fonction qui prend en entrée une trame brut (liste d'octets)
@@ -363,7 +366,7 @@ Cell_Printable* tcp_to_http(Trame*data,Tcp_brut* tcp_brut){
     sinon return une structure printable*/
 Cell_Printable* trame_brut_to_str(Trame* trame){
     //declaration
-    int read=read_ethernet(trame);;
+    int read=read_ethernet(trame);
     int get;
     Trame *segment;
     Trame *data;
@@ -404,14 +407,15 @@ Cell_Printable* trame_brut_to_str(Trame* trame){
             }else{
                 printf("La trame ne contient pas de segment tcp");
                 free(segment);
+                free(tcp_brut);
                 return NULL;
             }
-        
         }else{
-            return NULL;
+            free(tcp_brut);
+           return NULL;
         }
     }
-    
+    free(tcp_brut);
     return NULL;
 }
 /*La fonction prend en entrée une trace et retourne une List_Printable*/
@@ -429,15 +433,11 @@ List_Printable* trace_brut_to_str(Trace* trace){
         }else{
             ajout_cell_printable(lp,cp);
             ite = ite->next;
-
-        }
-        
-        
+        } 
     }
     if(lp->nb_printable==0){
         free_list_Printable(lp);
         free_cell_printable(cp);
-        
         return NULL;
     }
     return lp;
@@ -518,10 +518,7 @@ Trame* get_options(Trame *options,Tcp_brut* tcp_brut, int *cpt, int *thl){
     return options;    
 }
 
-int generate_file(FILE* fichier,List_Printable*lp){
-       
-    
-    
+int generate_file(FILE* fichier,List_Printable*lp){       
     if (fichier != NULL)
     {   
         if(lp==NULL ){
@@ -534,7 +531,6 @@ int generate_file(FILE* fichier,List_Printable*lp){
         char line[10000];
         while(ite != NULL)
         {
-            
             generate_line_file(ite->printable,line);
             fputs(line,fichier);
             ite = ite->next;
@@ -559,6 +555,12 @@ int generate_line_file(Printable* p, char line[10000]){
     strcat(line,p->port_src);
     strcat(line,",");
     strcat(line,p->port_dst);
+    strcat(line,",");
+    if(p->tcp==1){
+        strcat(line,"TCP");
+    }else{
+        strcat(line,"HTTP");
+    }
     strcat(line,",");
     strcat(line,p->type);
     strcat(line,",");
