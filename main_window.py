@@ -136,6 +136,7 @@ num_ligne = 1
 i = 0
 while i < len(content):
     
+    
     # On lit une ligne
     while content[i] != '\n':
 
@@ -147,7 +148,6 @@ while i < len(content):
             break
     
     champs = decoupage(ligne)
-    print("Decoupage de la ligne lue : " + str(champs))
 
     # On récupère tous les champs
     ip_src = champs[0]
@@ -156,15 +156,16 @@ while i < len(content):
     port_dest = champs[3]
     protocole = champs[4]
     msg_type = champs[5]
+    infos = champs[6]
 
     # On regarde si la source est à droite de la destination
     src_droite = dico_ip[ip_src] > dico_ip[ip_dest]
 
     # Création des flèches
-    cnv_src = Canvas(frm, height=50, width=200, bg='red', bd=0)
+    cnv_src = Canvas(frm, height=50, width=200, bd=0)
     cnv_src.create_line(100, 0, 100, 50, dash=(3,5))
 
-    cnv_dest = Canvas(frm, height=50, width=200, bg='red', bd=0)
+    cnv_dest = Canvas(frm, height=50, width=200, bd=0)
     cnv_dest.create_line(100, 0, 100, 50, dash=(3,5))
 
     # Cas où la source est à droite de la destination
@@ -192,8 +193,8 @@ while i < len(content):
         cnv_dest.create_text(50, 12.5, text=msg_type)
 
     # On les ajoute à la fenêtre
-    cnv_src.grid(column=dico_ip[ip_src], row=num_ligne)
-    cnv_dest.grid(column=dico_ip[ip_dest], row=num_ligne)
+    cnv_src.grid(column=dico_ip[ip_src], row=num_ligne, sticky='nesw')
+    cnv_dest.grid(column=dico_ip[ip_dest], row=num_ligne, sticky='nesw')
 
     # On parcours toutes les adresses IP
     for ip in dico_ip:
@@ -203,7 +204,7 @@ while i < len(content):
             continue
 
         # Création du canevas pour l'adresse IP courante
-        cnv_cur = Canvas(frm, height=50, width=200, bg='red', bd=0)
+        cnv_cur = Canvas(frm, height=50, width=200, bd=0)
         cnv_cur.create_line(100, 0, 100, 50, dash=(3,5))
 
         # On regarde si le canevas de l'ip courant est sur le trajet de la flèche
@@ -222,8 +223,9 @@ while i < len(content):
         # On ajoute le canevas courant à la fenêtre
         cnv_cur.grid(column=dico_ip[ip], row=num_ligne)
 
-    # On crée un canevas pour le protocole
-    cnv_type = Label(frm, text=protocole)
+    # On crée un canevas pour le comment
+    comment = protocole + ": " + infos
+    cnv_type = Label(frm, text=comment)
     
     # On l'ajoute à la fenêtre
     cnv_type.grid(column=len(dico_ip), row=num_ligne)
@@ -231,63 +233,6 @@ while i < len(content):
     ligne = ''
     num_ligne += 1
     i += 1
-
-"""
-# Label
-ip1 = Label(frm, text="255.255.168.88")
-ip2 = Label(frm, text="192.168.99.199")
-ip3 = Label(frm, text="128.119.245.12")
-comment = Label(frm, borderwidth=50, text="Comment")
-ligne1 = Label(frm, text='TCP TCP TCP TCP TCP TCP TCP TCP TCP TCP TCP TCP TCP TCP')
-ligne2 = Label(frm, text='HTTP')
-
-# Ajout dans la fenetre
-ip1.grid(column=0, row=0)
-ip2.grid(column=1, row=0)
-ip3.grid(column=2, row=0)
-comment.grid(column=3, row=0)
-ligne1.grid(column=3, row=1)
-ligne2.grid(column=3, row=2)
-
-# Canvas
-canevas1 = Canvas(frm, height=50, width=200, bg='red')
-canevas1.create_line(100, 0, 100, 50, dash=(3,5))
-canevas1.create_line(100, 25, 200, 25)
-canevas1.create_text(50, 25, text='80')
-
-canevas2 = Canvas(frm, height=50, width=200, bg='red')
-canevas2.create_line(100, 0, 100, 50, dash=(3,5))
-canevas2.create_line(0, 25, 100, 25, arrow='last')
-canevas2.create_text(50, 12.5, text='ACK')
-canevas2.create_text(150, 25, text='60779')
-
-canevas3 = Canvas(frm, height=50, width=200, bg='red')
-canevas3.create_line(100, 0, 100, 50, dash=(3,5))
-
-canevas4 = Canvas(frm, height=50, width=200, bg='green')
-canevas4.create_line(100, 0, 100, 50, dash=(3,5))
-canevas4.create_line(100, 25, 200, 25, arrow='first')
-canevas4.create_text(150, 12.5, text='SYN, ACK')
-canevas4.create_text(50, 25, text='80')
-
-canevas5 = Canvas(frm, height=50, width=200, bg='green')
-canevas5.create_line(100, 0, 100, 50, dash=(3,5))
-canevas5.create_line(200, 25, 0, 25)
-
-canevas6 = Canvas(frm, height=50, width=200, bg='green')
-canevas6.create_line(100, 0, 100, 50, dash=(3,5))
-canevas6.create_line(100, 25, 0, 25)
-canevas6.create_text(150, 25, text='5555')
-
-# Ajout dans la fenetre
-canevas1.grid(column=0, row=1)
-canevas2.grid(column=1, row=1)
-canevas3.grid(column=2, row=1)
-
-canevas4.grid(column=0, row=2)
-canevas5.grid(column=1, row=2)
-canevas6.grid(column=2, row=2)
-"""
 
 # Recalcul des dimensions de la fenêtre
 frm.update()

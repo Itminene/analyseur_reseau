@@ -1,5 +1,30 @@
 from tkinter import *
+import sys
 
+param = len(sys.argv)
+print(param)
+
+filtre1 = 'port.dest==5555'
+filtre2 = 'port.src==5555'
+filtre3 = 'ip.src==255.255.168.88'
+filtre4 = 'ip.dest==255.255.168.88'
+filtre5 = 'tcp'
+filtre6 = 'http'
+filtre7 = 'port==80'
+filtre8 = 'ip==255.255.168.88'
+
+filtre_comp = 'port.dest==5555,port.src==80,tcp'
+
+
+filtres = []
+if ',' in filtre_comp:
+    tmp = filtre_comp.split(',')
+    for filtre in tmp:
+        filtres += filtre.split('==')
+
+print(filtres)
+
+"""
 ## La fenetre, avec les options de grille qui vont bien
 root = Tk()
 root.grid_rowconfigure(0, weight=1)
@@ -35,3 +60,4 @@ cnv.configure(scrollregion=cnv.bbox(ALL))
 
 ## C'est parti!
 root.mainloop()
+"""

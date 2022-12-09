@@ -1,0 +1,34 @@
+# Script principal de l'application
+
+echo "=========== Visualisateur de trafic et flux ==========="
+echo "\n"
+
+quitter='q'
+
+# Lecture de l'entrée
+echo -n "Entrez le nom du fichier à analyser (q pour quitter) : "
+read entree
+
+while [[ $entree != $quitter ]]; do
+
+    # Test de l'existence du fichier
+    if [ ! -e $entree ]; then
+        echo "Fichier introuvable"
+    else
+        echo "Nom du fichier : $entree"
+        # Instructions permettant de générer le fichier 'generated.txt'
+        # make crée l'éxecutable generator (ou main)
+        # ./generator $entree crée le fichier
+        
+        gcc -o test2 test2.c
+
+        ./test2
+
+        python test.py
+    fi
+
+    # Lecture de l'entrée
+    echo -n "Entrez le nom du fichier à analyser (q pour quitter) : "
+    read entree
+
+done

@@ -4,6 +4,9 @@
 #include "analyse_trame.h"
 #include "lecture_trame.h"
 
+/* Fichier pour l'analyse des trames
+   Les paquets sont de trames avec le numéro -1 */
+
 /* Fonction qui permet d'analyser une entête ethernet
    Modifie le pointeur du 'paquet' passé en paramètre pour qu'elle pointe vers
    le premier octet des données de la trame et créé une nouvelle cellule de trame
@@ -13,12 +16,11 @@
 int read_ethernet(Trame *trame, Trame **paquet)
 {
     assert(trame);
+    assert(paquet);
+    assert(*paquet);
 
     // Déclaration
     int type, tmp;
-
-    (*paquet) = create_cell_trame(-1);
-    assert(paquet);
 
     (*paquet)->premier = trame->premier;
     (*paquet)->dernier = trame->dernier;
@@ -53,4 +55,14 @@ int read_ethernet(Trame *trame, Trame **paquet)
     type += tmp;
 
     return type;
+}
+
+/* Similaire à read_ethernet mais pour IP */
+int read_ip(Trame *paquet, Trame **segment)
+{
+    assert(paquet);
+    assert(segment);
+    assert(*segment);
+
+    
 }

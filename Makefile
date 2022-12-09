@@ -1,8 +1,14 @@
+main: main.o lecture_trame.o analyse_trame.o
+	gcc -Wall -o main $^
+
 test_analyse_trame: test_analyse_trame.o lecture_trame.o analyse_trame.o
 	gcc -Wall -o test_analyse_trame $^
 
 test_lecture_trame: test_lecture_trame.o lecture_trame.o
 	gcc -Wall -o test_lecture_trame $^
+
+main.o: main.c analyse_trame.h lecture_trame.h
+	gcc -Wall -c main.c
 
 test_analyse_trame.o: test_analyse_trame.c analyse_trame.h lecture_trame.h
 	gcc -Wall -c test_analyse_trame.c

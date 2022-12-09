@@ -10,7 +10,8 @@ int main(int argc, char const *argv[])
 {
     // Déclarations
     Trace *trace;
-    Trame *trame, *paquet = NULL;
+    Trame *trame, *paquet = create_cell_trame(-1);
+    assert(paquet);
     int type;
 
     printf("========== TEST ETHERNET TRACE 1 ==========\n");
@@ -31,7 +32,6 @@ int main(int argc, char const *argv[])
     // Libération de la trace
     free_trace(trace);
 
-    free(paquet);
 
     printf("========== TEST ETHERNET TRACE 3 ==========\n");
     trace = get_trace("trace3.txt");
@@ -51,7 +51,6 @@ int main(int argc, char const *argv[])
     // Libération de la trace
     free_trace(trace);
 
-    free(paquet);
 
     printf("========== TEST ETHERNET TRACE COMPLETE TCP ==========\n");
     trace = get_trace("trace_complete_tcp.txt");
@@ -71,7 +70,6 @@ int main(int argc, char const *argv[])
     // Libération de la trace
     free_trace(trace);
 
-    free(paquet);
 
     printf("\n\n Toutes les trames :\n\n");
     trace = get_trace("trace_complete_tcp.txt");
@@ -90,7 +88,14 @@ int main(int argc, char const *argv[])
     // Libération de la trace
     free_trace(trace);
 
+    // Libération du pointeur de paquet
     free(paquet);
+
+
+    printf("========== TEST ETHERNET TRACE COMPLETE TCP ==========\n");
+    trace = get_trace("trace_complete_tcp.txt");
+    assert(trace);
+
 
     return 0;
 }
